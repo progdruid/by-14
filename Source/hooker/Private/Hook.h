@@ -14,7 +14,8 @@ class AHook : public AActor
 	
 public:
 	AHook();
-	
+
+protected:
 	//fields and properties
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float Speed;
