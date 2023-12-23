@@ -38,4 +38,6 @@ public:
 	//functions
 	UFUNCTION(BlueprintCallable)
 	void SetHookDirection(FVector _direction);
+	UFUNCTION(BlueprintCallable)
+	void Revoke();
 };

@@ -27,6 +27,7 @@ void AHook::BeginPlay()
 // Called every frame
 void AHook::Tick(float DeltaTime)
 {
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.5, FColor::Cyan, FString("Still alive"));
 	Super::Tick(DeltaTime);
 	if (bIsFlying)
 		AddActorWorldOffset(Direction * Speed * DeltaTime, true);
@@ -41,4 +42,10 @@ void AHook::SetHookDirection(FVector _direction)
 	angle += 180.f * (Direction.Y < 0);
 	
 	SetActorRotation(FRotator(0.f, 0.f, angle));
+}
+
+void AHook::Revoke()
+{
+	bIsFlying = false;
+	Destroy();
 }

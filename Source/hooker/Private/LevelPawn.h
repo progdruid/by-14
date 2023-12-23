@@ -16,11 +16,13 @@ public:
 	ALevelPawn();
 	
 	//field and properties
-
+private:
+	AHook* LaunchedHook;
 	
 	//engine functions
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -28,5 +30,6 @@ public:
 	//functions
 	UFUNCTION(BlueprintCallable)
 	void LaunchHook(TSubclassOf<AHook> _specifiedHook);
-
+	UFUNCTION(BlueprintCallable)
+	void RevokeHook();
 };

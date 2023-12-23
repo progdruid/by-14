@@ -18,6 +18,11 @@ void ALevelPawn::BeginPlay()
 	
 }
 
+void ALevelPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	RevokeHook();
+}
+
 // Called to bind functionality to input
 void ALevelPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -31,12 +36,15 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 	if (!world || !_specifiedHook)
 		return;
 	
+	if (LaunchedHook)
+		RevokeHook();
+
 	FTransform transform = GetActorTransform();
 
 	//spawn
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	AHook* hook = world->SpawnActor<AHook>(_specifiedHook, transform, spawnParams);
+	LaunchedHook = world->SpawnActor<AHook>(_specifiedHook, transform, spawnParams);
 
 	//get mouse info
 	FVector mousePosition, mouseDirection;
@@ -51,5 +59,14 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 	FVector hookDirection = positionOnPlane - transform.GetLocation();
 
 	//set direction
-	hook->SetHookDirection(hookDirection);
+	LaunchedHook->SetHookDirection(hookDirection);
+}
+
+void ALevelPawn::RevokeHook()
+{
+	if (!LaunchedHook)
+		return;
+	
+	LaunchedHook->Destroy();
+	LaunchedHook = nullptr;
 }
