@@ -25,12 +25,11 @@ void AHook::BeginPlay()
 }
 
 // Called every frame
-void AHook::Tick(float DeltaTime)
+void AHook::Tick(float _deltaTime)
 {
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.5, FColor::Cyan, FString("Still alive"));
-	Super::Tick(DeltaTime);
+	Super::Tick(_deltaTime);
 	if (bIsFlying)
-		AddActorWorldOffset(Direction * Speed * DeltaTime, true);
+		AddActorWorldOffset(Direction * Speed * _deltaTime, true);
 }
 
 void AHook::SetHookDirection(FVector _direction)
@@ -48,4 +47,16 @@ void AHook::Revoke()
 {
 	bIsFlying = false;
 	Destroy();
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.1, FColor::Yellow, FString("Revoked"));
+}
+
+void AHook::HandleSurfaceCollision(bool _isHookable)
+{
+	bIsFlying = false;
+	if (!_isHookable)
+		Revoke();
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.1, FColor::Yellow, FString("Clinged"));
+	}
 }

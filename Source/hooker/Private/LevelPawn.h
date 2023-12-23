@@ -16,7 +16,8 @@ public:
 	ALevelPawn();
 	
 	//field and properties
-private:
+//private:
+	UPROPERTY()
 	AHook* LaunchedHook;
 	
 	//engine functions

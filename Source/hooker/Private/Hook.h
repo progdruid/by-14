@@ -40,4 +40,6 @@ public:
 	void SetHookDirection(FVector _direction);
 	UFUNCTION(BlueprintCallable)
 	void Revoke();
+	UFUNCTION(BlueprintCallable)
+	void HandleSurfaceCollision(bool _isHookable);
 };

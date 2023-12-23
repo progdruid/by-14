@@ -11,7 +11,6 @@ ALevelPawn::ALevelPawn()
 
 }
 
-// Called when the game starts or when spawned
 void ALevelPawn::BeginPlay()
 {
 	Super::BeginPlay();
@@ -23,7 +22,6 @@ void ALevelPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	RevokeHook();
 }
 
-// Called to bind functionality to input
 void ALevelPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -36,7 +34,7 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 	if (!world || !_specifiedHook)
 		return;
 	
-	if (LaunchedHook)
+	if (IsValid(LaunchedHook))
 		RevokeHook();
 
 	FTransform transform = GetActorTransform();
@@ -64,9 +62,11 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 
 void ALevelPawn::RevokeHook()
 {
-	if (!LaunchedHook)
+	if (!IsValid(LaunchedHook))
+	{
+		LaunchedHook = nullptr;
 		return;
-	
+	}
 	LaunchedHook->Destroy();
 	LaunchedHook = nullptr;
 }
