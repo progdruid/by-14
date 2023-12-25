@@ -30,10 +30,15 @@ void AHook::Tick(float _deltaTime)
 	Super::Tick(_deltaTime);
 	if (HookState == EHookState::Flying)
 		AddActorWorldOffset(Direction * Speed * _deltaTime, true);
+	
+	if (IsValid(PulledBody) && FVector::DistSquared(GetActorLocation(), PulledBody->GetActorLocation()) > RopeLength * RopeLength)
+		Revoke();
 }
 
-void AHook::SetHookDirection(FVector _direction)
+void AHook::Setup(FVector _direction, APawn* _pulledBody)
 {
+	PulledBody = _pulledBody;
+	
 	Direction = _direction;
 	Direction.Normalize();
 

@@ -57,7 +57,7 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 	FVector hookDirection = positionOnPlane - transform.GetLocation();
 
 	//set direction
-	LaunchedHook->SetHookDirection(hookDirection);
+	LaunchedHook->Setup(hookDirection, this);
 }
 
 void ALevelPawn::RevokeHook()

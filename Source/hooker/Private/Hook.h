@@ -27,13 +27,17 @@ protected:
 	//fields and properties
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float Speed;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	float RopeLength;
+	UPROPERTY(Transient, BlueprintReadOnly)
+	EHookState HookState = EHookState::Flying;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	FVector Direction;
 	UPROPERTY(Transient, BlueprintReadOnly)
-	EHookState HookState = EHookState::Flying;
+	APawn* PulledBody;
 
 	//components
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	UShapeComponent* Collision;
 
 	//engine functions
@@ -45,7 +49,7 @@ public:
 
 	//functions
 	UFUNCTION(BlueprintCallable)
-	void SetHookDirection(FVector _direction);
+	void Setup(FVector _direction, APawn* _pulledBody);
 	UFUNCTION(BlueprintCallable)
 	void Revoke();
 	UFUNCTION(BlueprintCallable)
