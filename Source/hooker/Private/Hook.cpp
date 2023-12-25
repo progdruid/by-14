@@ -28,7 +28,7 @@ void AHook::BeginPlay()
 void AHook::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
-	if (bIsFlying)
+	if (HookState == EHookState::Flying)
 		AddActorWorldOffset(Direction * Speed * _deltaTime, true);
 }
 
@@ -45,18 +45,18 @@ void AHook::SetHookDirection(FVector _direction)
 
 void AHook::Revoke()
 {
-	bIsFlying = false;
+	HookState = EHookState::None;
 	Destroy();
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.1, FColor::Yellow, FString("Revoked"));
 }
 
 void AHook::HandleSurfaceCollision(bool _isHookable)
 {
-	bIsFlying = false;
 	if (!_isHookable)
 		Revoke();
-	else
+	else if (HookState != EHookState::Clinged)
 	{
+		HookState = EHookState::Clinged;
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.1, FColor::Yellow, FString("Clinged"));
 	}
 }

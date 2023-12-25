@@ -7,6 +7,14 @@
 #include "Components/ShapeComponent.h"
 #include "Hook.generated.h"
 
+UENUM(BlueprintType)
+enum class EHookState : uint8
+{
+	None,
+	Flying,
+	Clinged
+};
+
 UCLASS()
 class AHook : public AActor
 {
@@ -21,8 +29,8 @@ protected:
 	float Speed;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	FVector Direction;
-	UPROPERTY(Transient, BlueprintReadWrite)
-	bool bIsFlying = true;
+	UPROPERTY(Transient, BlueprintReadOnly)
+	EHookState HookState = EHookState::Flying;
 
 	//components
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
