@@ -38,6 +38,11 @@ void AHook::Tick(float _deltaTime)
 		if (FVector::DistSquared(GetActorLocation(), PulledBody->GetActorLocation()) > RopeLength * RopeLength)
 			Revoke();
 	}
+	else if (HookState == EHookState::Clinged)
+	{
+		//decrease if greater than zero otherwise set to zero
+		PullTimer = (PullTimer - _deltaTime) * (PullTimer > 0.f);
+	}
 }
 
 void AHook::Setup(FVector _direction, APawn* _pulledBody)
@@ -67,6 +72,8 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 	else if (HookState != EHookState::Clinged)
 	{
 		HookState = EHookState::Clinged;
+		PullTimer = PullingTime;
+		HookedRopeLength = FVector::Distance(GetActorLocation(), PulledBody->GetActorLocation());
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.1, FColor::Yellow, FString("Clinged"));
 	}
 }
@@ -78,7 +85,9 @@ FVector AHook::GetPull()
 	if (IsValid(PulledBody) && HookState == EHookState::Clinged)
 	{
 		pullAcc = GetActorLocation() - PulledBody->GetActorLocation();
-		pullAcc *= Stiffness;
+		float dist = pullAcc.Size();
+		float currentRopeLength = MinRopeLength + (HookedRopeLength - MinRopeLength) * PullTimer * HookedRopeLength / RopeLength / PullingTime;
+		pullAcc *= (dist - currentRopeLength) / currentRopeLength * Stiffness * (dist - currentRopeLength > 0.f);
 	}
 	return pullAcc;
 }

@@ -30,13 +30,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float RopeLength;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	float MinRopeLength;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float Stiffness = 1.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	float PullingTime = 1.f;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	EHookState HookState = EHookState::Flying;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	FVector Direction;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	APawn* PulledBody;
+	UPROPERTY(Transient, BlueprintReadOnly)
+	float PullTimer = 0.f;
+	UPROPERTY(Transient, BlueprintReadOnly)
+	float HookedRopeLength;
 
 	//components
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components")
