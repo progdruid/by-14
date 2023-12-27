@@ -23,12 +23,14 @@ class AHook : public AActor
 public:
 	AHook();
 
-protected:
 	//fields and properties
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float Speed;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float RopeLength;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	float Stiffness = 1.f;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	EHookState HookState = EHookState::Flying;
 	UPROPERTY(Transient, BlueprintReadOnly)
@@ -54,4 +56,6 @@ public:
 	void Revoke();
 	UFUNCTION(BlueprintCallable)
 	void HandleSurfaceCollision(bool _isHookable);
+	UFUNCTION()
+	FVector GetPull();
 };

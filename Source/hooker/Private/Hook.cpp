@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Components/SphereComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Hook.h"
 
@@ -28,11 +29,13 @@ void AHook::BeginPlay()
 void AHook::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
-	if (HookState == EHookState::Flying)
+	if (!IsValid(PulledBody))
+		Revoke();
+	else if (HookState == EHookState::Flying)
 	{
 		AddActorWorldOffset(Direction * Speed * _deltaTime, true);
 
-		if (!IsValid(PulledBody) || FVector::DistSquared(GetActorLocation(), PulledBody->GetActorLocation()) > RopeLength * RopeLength)
+		if (FVector::DistSquared(GetActorLocation(), PulledBody->GetActorLocation()) > RopeLength * RopeLength)
 			Revoke();
 	}
 }
@@ -66,4 +69,16 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 		HookState = EHookState::Clinged;
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.1, FColor::Yellow, FString("Clinged"));
 	}
+}
+
+FVector AHook::GetPull()
+{
+
+	FVector pullAcc(0.f, 0.f, 0.f);
+	if (IsValid(PulledBody) && HookState == EHookState::Clinged)
+	{
+		pullAcc = GetActorLocation() - PulledBody->GetActorLocation();
+		pullAcc *= Stiffness;
+	}
+	return pullAcc;
 }

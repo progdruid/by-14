@@ -7,19 +7,28 @@
 ALevelPawn::ALevelPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
-
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ALevelPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	PhysicsBody = Cast<UPrimitiveComponent>(RootComponent);
 }
 
 void ALevelPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	RevokeHook();
+}
+
+void ALevelPawn::Tick(float _deltaTime)
+{
+	if (IsValid(LaunchedHook) && IsValid(PhysicsBody))
+	{
+		PhysicsBody->AddForce(LaunchedHook->GetPull(), NAME_None, true);
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Blue, LaunchedHook->GetPull().ToString());
+	}
 }
 
 void ALevelPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
