@@ -7,7 +7,7 @@
 ALevelPawn::ALevelPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void ALevelPawn::BeginPlay()
@@ -20,15 +20,6 @@ void ALevelPawn::BeginPlay()
 void ALevelPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	RevokeHook();
-}
-
-void ALevelPawn::Tick(float _deltaTime)
-{
-	if (IsValid(LaunchedHook) && IsValid(PhysicsBody))
-	{
-		PhysicsBody->AddForce(LaunchedHook->GetPull(), NAME_None, true);
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Blue, LaunchedHook->GetPull().ToString());
-	}
 }
 
 void ALevelPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -66,7 +57,7 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 	FVector hookDirection = positionOnPlane - transform.GetLocation();
 
 	//set direction
-	LaunchedHook->Setup(hookDirection, this);
+	LaunchedHook->Setup(hookDirection, TScriptInterface<IPullable>(this));
 }
 
 void ALevelPawn::RevokeHook()
@@ -76,6 +67,21 @@ void ALevelPawn::RevokeHook()
 		LaunchedHook = nullptr;
 		return;
 	}
-	LaunchedHook->Destroy();
+	LaunchedHook->Revoke();
 	LaunchedHook = nullptr;
+}
+
+void ALevelPawn::AddPull(FVector _pull)
+{
+	PhysicsBody->AddForce(_pull, NAME_None, true);
+}
+
+FVector ALevelPawn::GetLocation()
+{
+	return GetActorLocation();
+}
+
+void ALevelPawn::ToggleGravity(bool _bValue)
+{
+	PhysicsBody->SetEnableGravity(_bValue);
 }

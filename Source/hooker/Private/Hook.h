@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Pullable.h"
 #include "Components/ShapeComponent.h"
 #include "Hook.generated.h"
 
@@ -40,7 +41,7 @@ protected:
 	UPROPERTY(Transient, BlueprintReadOnly)
 	FVector Direction;
 	UPROPERTY(Transient, BlueprintReadOnly)
-	APawn* PulledBody;
+	TScriptInterface<IPullable> PulledBody;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	float PullTimer = 0.f;
 	UPROPERTY(Transient, BlueprintReadOnly)
@@ -59,7 +60,7 @@ public:
 
 	//functions
 	UFUNCTION(BlueprintCallable)
-	void Setup(FVector _direction, APawn* _pulledBody);
+	void Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody);
 	UFUNCTION(BlueprintCallable)
 	void Revoke();
 	UFUNCTION(BlueprintCallable)

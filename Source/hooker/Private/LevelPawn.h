@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Pullable.h"
 #include "Components/PrimitiveComponent.h"
 #include "Hook.h"
 #include "LevelPawn.generated.h"
 
 UCLASS()
-class ALevelPawn : public APawn
+class ALevelPawn : public APawn, public IPullable
 {
 	GENERATED_BODY()
 
@@ -29,7 +30,6 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
-	virtual void Tick(float _deltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	//functions
@@ -37,4 +37,10 @@ public:
 	void LaunchHook(TSubclassOf<AHook> _specifiedHook);
 	UFUNCTION(BlueprintCallable)
 	void RevokeHook();
+	UFUNCTION()
+	virtual void AddPull(FVector _pull) override;
+	UFUNCTION()
+	virtual FVector GetLocation() override;
+	UFUNCTION()
+	virtual void ToggleGravity(bool _bValue) override;		
 };

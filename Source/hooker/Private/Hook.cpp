@@ -29,23 +29,25 @@ void AHook::BeginPlay()
 void AHook::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
-	if (!IsValid(PulledBody))
+	if (!PulledBody)
 		Revoke();
 	else if (HookState == EHookState::Flying)
 	{
 		AddActorWorldOffset(Direction * Speed * _deltaTime, true);
 
-		if (FVector::DistSquared(GetActorLocation(), PulledBody->GetActorLocation()) > RopeLength * RopeLength)
+		if (FVector::DistSquared(GetActorLocation(), PulledBody.GetInterface()->GetLocation()) > RopeLength * RopeLength)
 			Revoke();
 	}
 	else if (HookState == EHookState::Clinged)
 	{
 		//decrease if greater than zero otherwise set to zero
 		PullTimer = (PullTimer - _deltaTime) * (PullTimer > 0.f);
+		if (PulledBody)
+			PulledBody->AddPull(GetPull());
 	}
 }
 
-void AHook::Setup(FVector _direction, APawn* _pulledBody)
+void AHook::Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody)
 {
 	PulledBody = _pulledBody;
 	
@@ -60,21 +62,22 @@ void AHook::Setup(FVector _direction, APawn* _pulledBody)
 
 void AHook::Revoke()
 {
+	if (HookState == EHookState::Clinged && PulledBody)
+		PulledBody.GetInterface()->ToggleGravity(true);
 	HookState = EHookState::None;
 	Destroy();
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.1, FColor::Yellow, FString("Revoked"));
 }
 
 void AHook::HandleSurfaceCollision(bool _isHookable)
 {
 	if (!_isHookable)
 		Revoke();
-	else if (HookState != EHookState::Clinged)
+	else if (HookState == EHookState::Flying && PulledBody)
 	{
 		HookState = EHookState::Clinged;
 		PullTimer = PullingTime;
-		HookedRopeLength = FVector::Distance(GetActorLocation(), PulledBody->GetActorLocation());
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.1, FColor::Yellow, FString("Clinged"));
+		PulledBody.GetInterface()->ToggleGravity(false);
+		HookedRopeLength = FVector::Distance(GetActorLocation(), PulledBody.GetInterface()->GetLocation());
 	}
 }
 
@@ -82,9 +85,9 @@ FVector AHook::GetPull()
 {
 
 	FVector pullAcc(0.f, 0.f, 0.f);
-	if (IsValid(PulledBody) && HookState == EHookState::Clinged)
+	if (PulledBody && HookState == EHookState::Clinged)
 	{
-		pullAcc = GetActorLocation() - PulledBody->GetActorLocation();
+		pullAcc = GetActorLocation() - PulledBody.GetInterface()->GetLocation();
 		float dist = pullAcc.Size();
 		float currentRopeLength = MinRopeLength + (HookedRopeLength - MinRopeLength) * PullTimer * HookedRopeLength / RopeLength / PullingTime;
 		pullAcc *= (dist - currentRopeLength) / currentRopeLength * Stiffness * (dist - currentRopeLength > 0.f);
