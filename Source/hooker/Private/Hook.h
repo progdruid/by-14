@@ -27,7 +27,7 @@ public:
 	//fields and properties
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float Speed;
+	float FlyingSpeed;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float RopeLength;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")

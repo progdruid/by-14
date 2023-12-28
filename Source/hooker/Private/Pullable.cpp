@@ -4,7 +4,7 @@
 #include "Pullable.h"
 
 // Add default functionality here for any IPullable functions that are not pure virtual.
-/*
+
 void IPullable::AddPull(FVector _pull)
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Pulled, lol"));
@@ -19,4 +19,4 @@ FVector IPullable::GetLocation()
 void IPullable::ToggleGravity(bool _bValue)
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Toggled gravity, lol"));
-}*/
+}
