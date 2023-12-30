@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Hook.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Hook.h"
 
 // Sets default values
 AHook::AHook()
@@ -77,6 +77,7 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 		HookState = EHookState::Clinged;
 		PullTimer = PullingTime;
 		PulledBody->ToggleGravity(false);
+		PulledBody->ResetVelocity();
 		HookedRopeLength = FVector::Distance(GetActorLocation(), PulledBody->GetLocation());
 	}
 }

@@ -28,4 +28,6 @@ public:
 	virtual FVector GetLocation();
 	UFUNCTION()
 	virtual void ToggleGravity(bool _bValue);
+	UFUNCTION()
+	virtual void ResetVelocity();
 };

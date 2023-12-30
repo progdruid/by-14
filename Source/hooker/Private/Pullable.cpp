@@ -20,3 +20,8 @@ void IPullable::ToggleGravity(bool _bValue)
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Toggled gravity, lol"));
 }
+
+void IPullable::ResetVelocity()
+{
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Reset velocity, lol"));
+}

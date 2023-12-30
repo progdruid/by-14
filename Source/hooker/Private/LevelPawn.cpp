@@ -85,3 +85,10 @@ void ALevelPawn::ToggleGravity(bool _bValue)
 {
 	PhysicsBody->SetEnableGravity(_bValue);
 }
+
+void ALevelPawn::ResetVelocity()
+{
+	PhysicsBody->SetAllPhysicsLinearVelocity(FVector(0.f));
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, 
+		PhysicsBody->GetPhysicsLinearVelocity().ToString());
+}
