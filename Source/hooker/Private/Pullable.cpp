@@ -25,3 +25,9 @@ void IPullable::ResetVelocity()
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Reset velocity, lol"));
 }
+
+bool IPullable::GetIsPullingRope()
+{
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Got pulling rope, lol"));
+	return false;
+}

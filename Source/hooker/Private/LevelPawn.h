@@ -17,7 +17,10 @@ class ALevelPawn : public APawn, public IPullable
 public:
 	ALevelPawn();
 	
+protected:
 	//field and properties
+	UPROPERTY(Transient, BlueprintReadWrite)
+	bool bIsPullingRope;
 private:
 	UPROPERTY()
 	AHook* LaunchedHook;
@@ -45,4 +48,6 @@ public:
 	virtual void ToggleGravity(bool _bValue) override;
 	UFUNCTION()
 	virtual void ResetVelocity() override;
+	UFUNCTION()
+	virtual bool GetIsPullingRope() override;
 };

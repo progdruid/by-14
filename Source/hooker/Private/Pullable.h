@@ -30,4 +30,6 @@ public:
 	virtual void ToggleGravity(bool _bValue);
 	UFUNCTION()
 	virtual void ResetVelocity();
+	UFUNCTION()
+	virtual bool GetIsPullingRope();
 };

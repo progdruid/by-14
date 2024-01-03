@@ -31,11 +31,8 @@ void ALevelPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 {
 	UWorld* world = GetWorld();
-	if (!world || !_specifiedHook)
+	if (!world || !_specifiedHook || IsValid(LaunchedHook))
 		return;
-	
-	if (IsValid(LaunchedHook))
-		RevokeHook();
 
 	FTransform transform = GetActorTransform();
 
@@ -91,4 +88,9 @@ void ALevelPawn::ResetVelocity()
 	PhysicsBody->SetAllPhysicsLinearVelocity(FVector(0.f));
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, 
 		PhysicsBody->GetPhysicsLinearVelocity().ToString());
+}
+
+bool ALevelPawn::GetIsPullingRope()
+{
+	return bIsPullingRope;
 }

@@ -27,15 +27,15 @@ public:
 	//fields and properties
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float FlyingSpeed;
+	float HookFlyingSpeed;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float RopeLength;
+	float MaxHookableRopeLength;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float MinRopeLength;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float Stiffness = 1.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float PullingTime = 1.f;
+	float RopeShrinkingSpeed;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	EHookState HookState = EHookState::Flying;
 	UPROPERTY(Transient, BlueprintReadOnly)
@@ -43,9 +43,7 @@ protected:
 	UPROPERTY(Transient, BlueprintReadOnly)
 	TScriptInterface<IPullable> PulledBody;
 	UPROPERTY(Transient, BlueprintReadOnly)
-	float PullTimer = 0.f;
-	UPROPERTY(Transient, BlueprintReadOnly)
-	float HookedRopeLength;
+	float CurrentRopeLength;
 
 	//components
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components")
@@ -67,4 +65,7 @@ public:
 	void HandleSurfaceCollision(bool _isHookable);
 	UFUNCTION()
 	FVector GetPull();
+
+private:
+	void ShrinkRope(float _deltaTime);
 };

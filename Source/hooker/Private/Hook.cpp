@@ -33,17 +33,17 @@ void AHook::Tick(float _deltaTime)
 		Revoke();
 	else if (HookState == EHookState::Flying)
 	{
-		AddActorWorldOffset(Direction * FlyingSpeed * _deltaTime, true);
+		AddActorWorldOffset(Direction * HookFlyingSpeed * _deltaTime, true);
 
-		if (FVector::DistSquared(GetActorLocation(), PulledBody->GetLocation()) > RopeLength * RopeLength)
+		if (FVector::DistSquared(GetActorLocation(), PulledBody->GetLocation()) > MaxHookableRopeLength * MaxHookableRopeLength)
 			Revoke();
 	}
 	else if (HookState == EHookState::Clinged)
 	{
 		//decrease if greater than zero otherwise set to zero
-		PullTimer = (PullTimer - _deltaTime) * (PullTimer > 0.f);
-		if (PulledBody)
-			PulledBody->AddPull(GetPull());
+		if (PulledBody->GetIsPullingRope())
+			ShrinkRope(_deltaTime);
+		PulledBody->AddPull(GetPull());
 	}
 }
 
@@ -62,8 +62,8 @@ void AHook::Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody)
 
 void AHook::Revoke()
 {
-	if (HookState == EHookState::Clinged && PulledBody)
-		PulledBody->ToggleGravity(true);
+	//if (HookState == EHookState::Clinged && PulledBody)
+	//	PulledBody->ToggleGravity(true);
 	HookState = EHookState::None;
 	Destroy();
 }
@@ -75,24 +75,28 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 	else if (HookState == EHookState::Flying && PulledBody)
 	{
 		HookState = EHookState::Clinged;
-		PullTimer = PullingTime;
-		PulledBody->ToggleGravity(false);
+		//PulledBody->ToggleGravity(false);
 		PulledBody->ResetVelocity();
-		HookedRopeLength = FVector::Distance(GetActorLocation(), PulledBody->GetLocation());
+		CurrentRopeLength = FVector::Distance(GetActorLocation(), PulledBody->GetLocation());
 	}
 }
 
 FVector AHook::GetPull()
 {
-
 	FVector pullAcc(0.f, 0.f, 0.f);
 	if (PulledBody && HookState == EHookState::Clinged)
 	{
 		pullAcc = GetActorLocation() - PulledBody->GetLocation();
 		float dist = pullAcc.Size();
-		float relativePullTime = PullTimer * HookedRopeLength / RopeLength;
-		float currentRopeLength = MinRopeLength + (HookedRopeLength - MinRopeLength) * relativePullTime / PullingTime;
-		pullAcc *= (dist - currentRopeLength) / currentRopeLength * Stiffness * (dist - currentRopeLength > 0.f);
+		pullAcc.Normalize();
+		pullAcc *= (dist - CurrentRopeLength) * Stiffness * (dist - CurrentRopeLength > 0);
 	}
 	return pullAcc;
+}
+
+void AHook::ShrinkRope(float _deltaTime)
+{
+	CurrentRopeLength -= RopeShrinkingSpeed * _deltaTime;
+	if (CurrentRopeLength < MinRopeLength)
+		CurrentRopeLength = MinRopeLength;
 }
