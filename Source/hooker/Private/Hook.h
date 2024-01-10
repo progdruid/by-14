@@ -46,10 +46,13 @@ protected:
 	float CurrentRopeLength;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	bool bCollided = false;
+<<<<<<< HEAD
 
 	//components
 	//UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	//UShapeComponent* Collision;
+=======
+>>>>>>> 210db07 (hook collision fixed)
 
 	//engine functions
 protected:
