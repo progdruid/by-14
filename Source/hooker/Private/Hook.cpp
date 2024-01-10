@@ -10,12 +10,6 @@ AHook::AHook()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	Collision = CreateDefaultSubobject<USphereComponent>("Collision");
-	Collision->bEditableWhenInherited = true;
-	Collision->SetSimulatePhysics(false);
-	RootComponent = Collision;
-	RootComponent->bEditableWhenInherited = true;
 }
 
 // Called when the game starts or when spawned
@@ -49,6 +43,9 @@ void AHook::Tick(float _deltaTime)
 
 void AHook::Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody)
 {
+	if (!this)
+		return;
+
 	PulledBody = _pulledBody;
 	
 	Direction = _direction;
@@ -70,6 +67,10 @@ void AHook::Revoke()
 
 void AHook::HandleSurfaceCollision(bool _isHookable)
 {
+	if (bCollided)
+		return;
+	bCollided = true;
+
 	if (!_isHookable)
 		Revoke();
 	else if (HookState == EHookState::Flying && PulledBody)
