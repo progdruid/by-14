@@ -44,10 +44,12 @@ protected:
 	TScriptInterface<IPullable> PulledBody;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	float CurrentRopeLength;
+	UPROPERTY(Transient, BlueprintReadOnly)
+	bool bCollided = false;
 
 	//components
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	UShapeComponent* Collision;
+	//UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	//UShapeComponent* Collision;
 
 	//engine functions
 protected:
