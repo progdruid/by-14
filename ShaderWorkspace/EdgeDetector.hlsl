@@ -2,7 +2,7 @@
 #define PI 3.1415926538
 
 float centerDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV, 1), 1, false).r;
-float depthScaler = centerDepth / DefaultDepth;
+float depthScaler = rsqrt(DefaultDepth / centerDepth);
 float2 scaledEdgeOffset = EdgeUVOffset / depthScaler;
 if (scaledEdgeOffset.x < MinUVOffset)
     scaledEdgeOffset.x = MinUVOffset;
