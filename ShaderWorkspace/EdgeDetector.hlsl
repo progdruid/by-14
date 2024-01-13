@@ -28,3 +28,5 @@ for (int i = 0; i < NumberEdgeChecks; i++)
         return 1;
 }
 return 0;
+
+#undef PI
