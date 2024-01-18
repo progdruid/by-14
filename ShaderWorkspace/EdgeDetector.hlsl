@@ -23,10 +23,19 @@ for (int i = 0; i < NumberEdgeChecks; i++)
     float3 firstNormal = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + offsetVec, 8), 8, false);
     float3 secondNormal = SceneTextureLookup(ViewportUVToSceneTextureUV(UV - offsetVec, 8), 8, false);
     bool normalDetected = dot(firstNormal, secondNormal) < NormalThreshold;
+    
+    float firstFace = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + offsetVec, 7), 7, false);
+    float secondFace = SceneTextureLookup(ViewportUVToSceneTextureUV(UV - offsetVec, 7), 7, false);
 
     if (depthDetected || normalDetected)
+    {
+        FirstFace = firstFace;
+        SecondFace = secondFace;
         return 1;
+    }
 }
+FirstFace = 0;
+SecondFace = 0;
 return 0;
 
 #undef PI
