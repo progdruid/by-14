@@ -22,20 +22,17 @@ for (int i = 0; i < NumberEdgeChecks; i++)
 
     float3 firstNormal = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + offsetVec, 8), 8, false);
     float3 secondNormal = SceneTextureLookup(ViewportUVToSceneTextureUV(UV - offsetVec, 8), 8, false);
-    bool normalDetected = dot(firstNormal, secondNormal) < NormalThreshold;
+    bool normalDetected = dot(firstNormal, secondNormal) < (1. - NormalThreshold);
     
-    float firstFace = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + offsetVec, 7), 7, false);
-    float secondFace = SceneTextureLookup(ViewportUVToSceneTextureUV(UV - offsetVec, 7), 7, false);
-
-    if (depthDetected || normalDetected)
-    {
-        FirstFace = firstFace;
-        SecondFace = secondFace;
+    float3 firstColor = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + offsetVec, 2), 2, false);
+    float3 secondColor = SceneTextureLookup(ViewportUVToSceneTextureUV(UV - offsetVec, 2), 2, false);
+    float3 diffColor = abs(firstColor - secondColor);
+    bool colorDetected = diffColor.r + diffColor.g + diffColor.b > ColorThreshold;
+    
+    if (depthDetected || normalDetected || colorDetected)
         return 1;
-    }
+    
 }
-FirstFace = 0;
-SecondFace = 0;
 return 0;
 
 #undef PI
