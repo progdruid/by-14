@@ -34,18 +34,18 @@ protected:
 	float MinRopeLength;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float Stiffness = 1.f;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	//float RopeShrinkingSpeed;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float RopeShrinkingSpeed;
+	float BodyPull = 0.f;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	EHookState HookState = EHookState::Flying;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	FVector Direction;
 	UPROPERTY(Transient, BlueprintReadOnly)
-	TScriptInterface<IPullable> PulledBody;
+	TScriptInterface<IPullable> ConnectedBody;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	float CurrentRopeLength;
-	UPROPERTY(Transient, BlueprintReadOnly)
-	bool bCollided = false;
 
 	//engine functions
 protected:
@@ -61,9 +61,8 @@ public:
 	void Revoke();
 	UFUNCTION(BlueprintCallable)
 	void HandleSurfaceCollision(bool _isHookable);
-	UFUNCTION()
-	FVector GetPull();
 
 private:
-	void ShrinkRope(float _deltaTime);
+	void ApplyRopePull();
+	void ApplyBodyPull();
 };
