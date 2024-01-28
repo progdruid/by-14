@@ -41,7 +41,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RevokeHook();
 	UFUNCTION()
-	virtual void AddPull(FVector _pull) override;
+	virtual void AddInstantaneousForce(FVector _force) override;
 	UFUNCTION()
 	virtual FVector GetLocation() override;
 	UFUNCTION()

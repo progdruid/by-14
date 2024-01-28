@@ -5,7 +5,7 @@
 
 // Add default functionality here for any IPullable functions that are not pure virtual.
 
-void IPullable::AddPull(FVector _pull)
+void IPullable::AddInstantaneousForce(FVector _force)
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Pulled, lol"));
 }

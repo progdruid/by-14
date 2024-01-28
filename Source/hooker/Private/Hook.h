@@ -34,10 +34,12 @@ protected:
 	float MinRopeLength;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float Stiffness = 1.f;
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	//float RopeShrinkingSpeed;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	float RopePullSpeed;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float BodyPull = 0.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	bool bUseNewPullSystem = false;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	EHookState HookState = EHookState::Flying;
 	UPROPERTY(Transient, BlueprintReadOnly)
@@ -63,6 +65,7 @@ public:
 	void HandleSurfaceCollision(bool _isHookable);
 
 private:
-	void ApplyRopePull();
-	void ApplyBodyPull();
+	void ApplyRopeForce();
+	void ApplyPullForce();
+	void PullRope(float _deltaTime);
 };

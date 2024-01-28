@@ -23,7 +23,7 @@ class HOOKER_API IPullable
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION()
-	virtual void AddPull(FVector _pull);
+	virtual void AddInstantaneousForce(FVector _force);
 	UFUNCTION()
 	virtual FVector GetLocation();
 	UFUNCTION()
