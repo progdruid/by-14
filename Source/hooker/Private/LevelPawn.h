@@ -45,6 +45,8 @@ public:
 	UFUNCTION()
 	virtual FVector GetLocation() override;
 	UFUNCTION()
+	virtual FVector GetBodyVelocity() override;
+	UFUNCTION()
 	virtual void ToggleGravity(bool _bValue) override;
 	UFUNCTION()
 	virtual void ResetVelocity() override;

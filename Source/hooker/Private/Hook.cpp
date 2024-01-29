@@ -34,14 +34,23 @@ void AHook::Tick(float _deltaTime)
 	}
 	else if (HookState == EHookState::Clinged)
 	{
-		if (ConnectedBody->GetIsPullingRope())
+		bool pullingRope = ConnectedBody->GetIsPullingRope();
+		if (bUseNewPullSystem)
 		{
-			if (bUseNewPullSystem)
-				ApplyPullForce();
-			else
+			//if (!bWasPullingRope && pullingRope)
+			//	;
+			if (pullingRope)
+				ApplyHandForce();
+		}
+		else
+		{
+			if (!bWasPullingRope && pullingRope)
+				InitRopePull();
+			if (pullingRope)
 				PullRope(_deltaTime);
 		}
 		ApplyRopeForce();
+		bWasPullingRope = pullingRope;
 	}
 }
 
@@ -81,6 +90,26 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 	}
 }
 
+void AHook::InitRopePull()
+{
+	CurrentShorteningSpeed = RopePullSpeed;
+
+	CurrentRopeLength -= InitialRopeShorteningOffset;
+}
+
+void AHook::PullRope(float _deltaTime)
+{
+	CurrentRopeLength -= CurrentShorteningSpeed * _deltaTime;
+	
+	float dist = FVector::Dist(GetActorLocation(), ConnectedBody->GetLocation());
+	if (dist < CurrentRopeLength)
+		CurrentRopeLength = dist;
+	if (CurrentRopeLength < MinRopeLength)
+		CurrentRopeLength = MinRopeLength;
+
+	CurrentShorteningSpeed += RopeShorteningAcceleration;
+}
+
 void AHook::ApplyRopeForce()
 {
 	FVector force(0.f, 0.f, 0.f);
@@ -92,18 +121,7 @@ void AHook::ApplyRopeForce()
 
 }
 
-void AHook::PullRope(float _deltaTime)
-{
-	CurrentRopeLength -= RopePullSpeed * _deltaTime;
-	
-	float dist = FVector::Dist(GetActorLocation(), ConnectedBody->GetLocation());
-	if (dist < CurrentRopeLength)
-		CurrentRopeLength = dist;
-	if (CurrentRopeLength < MinRopeLength)
-		CurrentRopeLength = MinRopeLength;
-}
-
-void AHook::ApplyPullForce()
+void AHook::ApplyHandForce()
 {
 	FVector toHookVector = GetActorLocation() - ConnectedBody->GetLocation();
 	float dist = toHookVector.Size();
@@ -113,5 +131,12 @@ void AHook::ApplyPullForce()
 		CurrentRopeLength = MinRopeLength;
 
 	toHookVector.Normalize();
-	ConnectedBody->AddInstantaneousForce(toHookVector * BodyPull);
+
+	FVector vel = ConnectedBody->GetBodyVelocity();
+	float speedToHook = vel.Size();
+	vel.Normalize();
+	speedToHook *= FVector::DotProduct(vel, toHookVector);
+
+	if (speedToHook < MaxPullSpeed)
+		ConnectedBody->AddInstantaneousForce(toHookVector * BodyPull);
 }

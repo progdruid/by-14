@@ -16,6 +16,12 @@ FVector IPullable::GetLocation()
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Got location, lol"));
 }
 
+FVector IPullable::GetBodyVelocity()
+{
+	return FVector(0, 0, 0);
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Got velocity, lol"));
+}
+
 void IPullable::ToggleGravity(bool _bValue)
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Toggled gravity, lol"));

@@ -78,6 +78,11 @@ FVector ALevelPawn::GetLocation()
 	return GetActorLocation();
 }
 
+FVector ALevelPawn::GetBodyVelocity()
+{
+	return GetVelocity();
+}
+
 void ALevelPawn::ToggleGravity(bool _bValue)
 {
 	PhysicsBody->SetEnableGravity(_bValue);

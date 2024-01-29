@@ -27,6 +27,8 @@ public:
 	UFUNCTION()
 	virtual FVector GetLocation();
 	UFUNCTION()
+	virtual FVector GetBodyVelocity();
+	UFUNCTION()
 	virtual void ToggleGravity(bool _bValue);
 	UFUNCTION()
 	virtual void ResetVelocity();
