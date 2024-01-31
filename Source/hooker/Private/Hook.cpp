@@ -27,10 +27,10 @@ void AHook::Tick(float _deltaTime)
 		Revoke();
 	else if (HookState == EHookState::Flying)
 	{
-		AddActorWorldOffset(Direction * HookFlyingSpeed * _deltaTime, true);
-
 		if (FVector::DistSquared(GetActorLocation(), ConnectedBody->GetLocation()) > MaxHookableRopeLength * MaxHookableRopeLength)
 			Revoke();
+
+		AddActorWorldOffset(Direction * HookFlyingSpeed * _deltaTime, true);
 	}
 	else if (HookState == EHookState::Clinged)
 	{
