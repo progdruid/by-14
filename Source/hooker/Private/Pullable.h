@@ -25,11 +25,11 @@ public:
 	UFUNCTION()
 	virtual void AddInstantaneousForce(FVector _force);
 	UFUNCTION()
+	virtual void AddInstantaneousVelocity(FVector _vel);
+	UFUNCTION()
 	virtual FVector GetLocation();
 	UFUNCTION()
 	virtual FVector GetBodyVelocity();
-	UFUNCTION()
-	virtual void ToggleGravity(bool _bValue);
 	UFUNCTION()
 	virtual void ResetVelocity();
 	UFUNCTION()

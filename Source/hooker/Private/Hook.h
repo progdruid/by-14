@@ -36,19 +36,11 @@ protected:
 	float Stiffness = 1.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float RopePullSpeed;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float RopeShorteningAcceleration = 0.f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float InitialRopeShorteningOffset = 0.f;
-
+	float InitPullVelocity = 0.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float BodyPull = 0.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float MaxPullSpeed = 0.f;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	bool bUseNewPullSystem = false;
 	
 	UPROPERTY(Transient, BlueprintReadOnly)
 	EHookState HookState = EHookState::Flying;
@@ -58,10 +50,6 @@ protected:
 	TScriptInterface<IPullable> ConnectedBody;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	float CurrentRopeLength;
-	UPROPERTY(Transient, BlueprintReadOnly)
-	float CurrentShorteningSpeed = 0.f;
-	UPROPERTY(Transient, BlueprintReadOnly)
-	bool bWasPullingRope = false;
 
 	//engine functions
 protected:

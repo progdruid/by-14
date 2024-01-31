@@ -34,23 +34,10 @@ void AHook::Tick(float _deltaTime)
 	}
 	else if (HookState == EHookState::Clinged)
 	{
-		bool pullingRope = ConnectedBody->GetIsPullingRope();
-		if (bUseNewPullSystem)
-		{
-			//if (!bWasPullingRope && pullingRope)
-			//	;
-			if (pullingRope)
-				ApplyHandForce();
-		}
-		else
-		{
-			if (!bWasPullingRope && pullingRope)
-				InitRopePull();
-			if (pullingRope)
-				PullRope(_deltaTime);
-		}
+		if (ConnectedBody->GetIsPullingRope())
+			ApplyHandForce();
+		
 		ApplyRopeForce();
-		bWasPullingRope = pullingRope;
 	}
 }
 
@@ -86,39 +73,23 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 	{
 		HookState = EHookState::Clinged;
 		ConnectedBody->ResetVelocity();
-		CurrentRopeLength = FVector::Distance(GetActorLocation(), ConnectedBody->GetLocation());
+		FVector toHookVec = GetActorLocation() - ConnectedBody->GetLocation();
+		CurrentRopeLength = toHookVec.Size();
+		if (ConnectedBody->GetIsPullingRope())
+		{
+			toHookVec.Normalize();
+			ConnectedBody->AddInstantaneousVelocity(toHookVec * InitPullVelocity);
+		}
 	}
-}
-
-void AHook::InitRopePull()
-{
-	CurrentShorteningSpeed = RopePullSpeed;
-
-	CurrentRopeLength -= InitialRopeShorteningOffset;
-}
-
-void AHook::PullRope(float _deltaTime)
-{
-	CurrentRopeLength -= CurrentShorteningSpeed * _deltaTime;
-	
-	float dist = FVector::Dist(GetActorLocation(), ConnectedBody->GetLocation());
-	if (dist < CurrentRopeLength)
-		CurrentRopeLength = dist;
-	if (CurrentRopeLength < MinRopeLength)
-		CurrentRopeLength = MinRopeLength;
-
-	CurrentShorteningSpeed += RopeShorteningAcceleration;
 }
 
 void AHook::ApplyRopeForce()
 {
-	FVector force(0.f, 0.f, 0.f);
-	force = GetActorLocation() - ConnectedBody->GetLocation();
+	FVector force = GetActorLocation() - ConnectedBody->GetLocation();
 	float dist = force.Size();
 	force.Normalize();
 	force *= (dist - CurrentRopeLength) * Stiffness * (dist - CurrentRopeLength > 0);
 	ConnectedBody->AddInstantaneousForce(force);
-
 }
 
 void AHook::ApplyHandForce()

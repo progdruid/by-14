@@ -73,6 +73,11 @@ void ALevelPawn::AddInstantaneousForce(FVector _force)
 	PhysicsBody->AddForce(_force, NAME_None, true);
 }
 
+void ALevelPawn::AddInstantaneousVelocity(FVector _vel)
+{
+	PhysicsBody->AddImpulse(_vel, NAME_None, true);
+}
+
 FVector ALevelPawn::GetLocation()
 {
 	return GetActorLocation();
@@ -81,11 +86,6 @@ FVector ALevelPawn::GetLocation()
 FVector ALevelPawn::GetBodyVelocity()
 {
 	return GetVelocity();
-}
-
-void ALevelPawn::ToggleGravity(bool _bValue)
-{
-	PhysicsBody->SetEnableGravity(_bValue);
 }
 
 void ALevelPawn::ResetVelocity()

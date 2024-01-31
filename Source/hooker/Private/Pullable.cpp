@@ -7,33 +7,39 @@
 
 void IPullable::AddInstantaneousForce(FVector _force)
 {
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Pulled, lol"));
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f,
+		FColor::Red, FString("Pulled, lol"));
+}
+
+void IPullable::AddInstantaneousVelocity(FVector _vel)
+{
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f,
+		FColor::Red, FString("Added velocity, lol"));
 }
 
 FVector IPullable::GetLocation()
 {
 	return FVector(0, 0, 0);
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Got location, lol"));
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f,
+		FColor::Red, FString("Got location, lol"));
 }
 
 FVector IPullable::GetBodyVelocity()
 {
 	return FVector(0, 0, 0);
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Got velocity, lol"));
-}
-
-void IPullable::ToggleGravity(bool _bValue)
-{
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Toggled gravity, lol"));
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f,
+		FColor::Red, FString("Got velocity, lol"));
 }
 
 void IPullable::ResetVelocity()
 {
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Reset velocity, lol"));
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f,
+		FColor::Red, FString("Reset velocity, lol"));
 }
 
 bool IPullable::GetIsPullingRope()
 {
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, FString("Got pulling rope, lol"));
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f,
+		FColor::Red, FString("Got pulling rope, lol"));
 	return false;
 }
