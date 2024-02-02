@@ -40,12 +40,15 @@ public:
 	void LaunchHook(TSubclassOf<AHook> _specifiedHook);
 	UFUNCTION(BlueprintCallable)
 	void RevokeHook();
+
 	UFUNCTION()
-	virtual void AddPull(FVector _pull) override;
+	virtual void AddInstantaneousForce(FVector _force) override;
+	UFUNCTION()
+	virtual void AddInstantaneousVelocity(FVector _vel) override;
 	UFUNCTION()
 	virtual FVector GetLocation() override;
 	UFUNCTION()
-	virtual void ToggleGravity(bool _bValue) override;
+	virtual FVector GetBodyVelocity() override;
 	UFUNCTION()
 	virtual void ResetVelocity() override;
 	UFUNCTION()
