@@ -44,7 +44,7 @@ public:
 	UFUNCTION()
 	virtual void AddInstantaneousForce(FVector _force) override;
 	UFUNCTION()
-	virtual void AddInstantaneousVelocity(FVector _vel) override;
+	virtual void AddVelocity(FVector _vel) override;
 	UFUNCTION()
 	virtual FVector GetLocation() override;
 	UFUNCTION()
