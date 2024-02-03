@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Pullable.h"
-#include "Components/ShapeComponent.h"
 #include "Hook.generated.h"
 
 UENUM(BlueprintType)
@@ -27,11 +26,11 @@ public:
 	//fields and properties
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float HookFlyingSpeed;
+	float HookFlyingSpeed = 0.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float MaxHookableRopeLength;
+	float MaxHookableRopeLength = 100000.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float MinRopeLength;
+	float MinRopeLength = 10.;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float Stiffness = 1.f;
 
@@ -45,19 +44,18 @@ protected:
 	UPROPERTY(Transient, BlueprintReadOnly)
 	EHookState HookState = EHookState::Flying;
 	UPROPERTY(Transient, BlueprintReadOnly)
-	FVector Direction;
+	FVector Direction = FVector(0.f, 0.f, 0.f);
 	UPROPERTY(Transient, BlueprintReadOnly)
 	TScriptInterface<IPullable> ConnectedBody;
 	UPROPERTY(Transient, BlueprintReadOnly)
-	float CurrentRopeLength;
+	float CurrentRopeLength = 0.f;
 
 	//engine functions
-protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float _deltaTime) override;
-
+	
 	//functions
 	UFUNCTION(BlueprintCallable)
 	void Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody);
@@ -67,9 +65,6 @@ public:
 	void HandleSurfaceCollision(bool _isHookable);
 
 private:
-	void InitRopePull();
-	void PullRope(float _deltaTime);
-	void ApplyRopeForce();
-	void InitHandPull();
-	void ApplyHandForce();
+	void ApplyRopeForce(float _deltaTime);
+	void ApplyHandForce(float _deltaTime);
 };

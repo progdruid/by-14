@@ -73,7 +73,7 @@ void ALevelPawn::AddInstantaneousForce(FVector _force)
 	PhysicsBody->AddForce(_force, NAME_None, true);
 }
 
-void ALevelPawn::AddInstantaneousVelocity(FVector _vel)
+void ALevelPawn::AddVelocity(FVector _vel)
 {
 	PhysicsBody->AddImpulse(_vel, NAME_None, true);
 }

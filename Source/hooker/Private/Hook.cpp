@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Hook.h"
-#include "Components/SphereComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -35,9 +33,9 @@ void AHook::Tick(float _deltaTime)
 	else if (HookState == EHookState::Clinged)
 	{
 		if (ConnectedBody->GetIsPullingRope())
-			ApplyHandForce();
+			ApplyHandForce(_deltaTime);
 		
-		ApplyRopeForce();
+		ApplyRopeForce(_deltaTime);
 	}
 }
 
@@ -78,21 +76,21 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 		if (ConnectedBody->GetIsPullingRope())
 		{
 			toHookVec.Normalize();
-			ConnectedBody->AddInstantaneousVelocity(toHookVec * InitPullVelocity);
+			ConnectedBody->AddVelocity(toHookVec * InitPullVelocity);
 		}
 	}
 }
 
-void AHook::ApplyRopeForce()
+void AHook::ApplyRopeForce(float _deltaTime)
 {
 	FVector force = GetActorLocation() - ConnectedBody->GetLocation();
 	float dist = force.Size();
 	force.Normalize();
 	force *= (dist - CurrentRopeLength) * Stiffness * (dist - CurrentRopeLength > 0);
-	ConnectedBody->AddInstantaneousForce(force);
+	ConnectedBody->AddVelocity(force * _deltaTime);
 }
 
-void AHook::ApplyHandForce()
+void AHook::ApplyHandForce(float _deltaTime)
 {
 	FVector toHookVector = GetActorLocation() - ConnectedBody->GetLocation();
 	float dist = toHookVector.Size();
@@ -107,7 +105,6 @@ void AHook::ApplyHandForce()
 	float speedToHook = vel.Size();
 	vel.Normalize();
 	speedToHook *= FVector::DotProduct(vel, toHookVector);
-
 	if (speedToHook < MaxPullSpeed)
-		ConnectedBody->AddInstantaneousForce(toHookVector * BodyPull);
+		ConnectedBody->AddVelocity(toHookVector * BodyPull * _deltaTime);
 }

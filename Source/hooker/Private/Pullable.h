@@ -25,7 +25,7 @@ public:
 	UFUNCTION()
 	virtual void AddInstantaneousForce(FVector _force);
 	UFUNCTION()
-	virtual void AddInstantaneousVelocity(FVector _vel);
+	virtual void AddVelocity(FVector _vel);
 	UFUNCTION()
 	virtual FVector GetLocation();
 	UFUNCTION()

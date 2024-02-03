@@ -11,7 +11,7 @@ void IPullable::AddInstantaneousForce(FVector _force)
 		FColor::Red, FString("Pulled, lol"));
 }
 
-void IPullable::AddInstantaneousVelocity(FVector _vel)
+void IPullable::AddVelocity(FVector _vel)
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f,
 		FColor::Red, FString("Added velocity, lol"));
