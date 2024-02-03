@@ -86,7 +86,9 @@ void AHook::ApplyRopeForce(float _deltaTime)
 	FVector force = GetActorLocation() - ConnectedBody->GetLocation();
 	float dist = force.Size();
 	force.Normalize();
-	force *= (dist - CurrentRopeLength) * Stiffness * _deltaTime * (dist - CurrentRopeLength > 0);
+	//float n = _deltaTime / 0.03f;
+	//float factor = 2.f * n / (n + 1.f);
+	force *= (dist - CurrentRopeLength) * Stiffness * 0.03 * (dist - CurrentRopeLength > 0);
 	ConnectedBody->AddInstantaneousForce(force);
 }
 
@@ -105,7 +107,8 @@ void AHook::ApplyHandForce(float _deltaTime)
 	float speedToHook = vel.Size();
 	vel.Normalize();
 	speedToHook *= FVector::DotProduct(vel, toHookVector);
-
+    //float n = _deltaTime / 0.03f;
+	//float factor = 2.f * n / (n + 1.f);
 	if (speedToHook < MaxPullSpeed)
-		ConnectedBody->AddInstantaneousForce(toHookVector * BodyPull * _deltaTime);
+		ConnectedBody->AddInstantaneousForce(toHookVector * BodyPull * 0.03f);
 }

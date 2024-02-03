@@ -55,7 +55,7 @@ protected:
 
 public:	
 	virtual void Tick(float _deltaTime) override;
-
+	
 	//functions
 	UFUNCTION(BlueprintCallable)
 	void Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody);
