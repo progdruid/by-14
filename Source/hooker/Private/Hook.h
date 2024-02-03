@@ -65,6 +65,6 @@ public:
 	void HandleSurfaceCollision(bool _isHookable);
 
 private:
-	void ApplyRopeForce();
-	void ApplyHandForce();
+	void ApplyRopeForce(float _deltaTime);
+	void ApplyHandForce(float _deltaTime);
 };

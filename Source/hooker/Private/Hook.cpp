@@ -33,9 +33,9 @@ void AHook::Tick(float _deltaTime)
 	else if (HookState == EHookState::Clinged)
 	{
 		if (ConnectedBody->GetIsPullingRope())
-			ApplyHandForce();
+			ApplyHandForce(_deltaTime);
 		
-		ApplyRopeForce();
+		ApplyRopeForce(_deltaTime);
 	}
 }
 
@@ -81,16 +81,16 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 	}
 }
 
-void AHook::ApplyRopeForce()
+void AHook::ApplyRopeForce(float _deltaTime)
 {
 	FVector force = GetActorLocation() - ConnectedBody->GetLocation();
 	float dist = force.Size();
 	force.Normalize();
-	force *= (dist - CurrentRopeLength) * Stiffness * (dist - CurrentRopeLength > 0);
+	force *= (dist - CurrentRopeLength) * Stiffness * _deltaTime * (dist - CurrentRopeLength > 0);
 	ConnectedBody->AddInstantaneousForce(force);
 }
 
-void AHook::ApplyHandForce()
+void AHook::ApplyHandForce(float _deltaTime)
 {
 	FVector toHookVector = GetActorLocation() - ConnectedBody->GetLocation();
 	float dist = toHookVector.Size();
@@ -107,5 +107,5 @@ void AHook::ApplyHandForce()
 	speedToHook *= FVector::DotProduct(vel, toHookVector);
 
 	if (speedToHook < MaxPullSpeed)
-		ConnectedBody->AddInstantaneousForce(toHookVector * BodyPull);
+		ConnectedBody->AddInstantaneousForce(toHookVector * BodyPull * _deltaTime);
 }
