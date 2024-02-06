@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Pullable.h"
-#include "Components/ShapeComponent.h"
 #include "Hook.generated.h"
 
 UENUM(BlueprintType)
@@ -27,33 +26,36 @@ public:
 	//fields and properties
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float HookFlyingSpeed;
+	float HookFlyingSpeed = 0.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float MaxHookableRopeLength;
+	float MaxHookableRopeLength = 100000.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float MinRopeLength;
+	float MinRopeLength = 10.;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float Stiffness = 1.f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
-	float RopeShrinkingSpeed;
+	float InitPullVelocity = 0.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	float BodyPull = 0.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	float MaxPullSpeed = 0.f;
+	
 	UPROPERTY(Transient, BlueprintReadOnly)
 	EHookState HookState = EHookState::Flying;
 	UPROPERTY(Transient, BlueprintReadOnly)
-	FVector Direction;
+	FVector Direction = FVector(0.f, 0.f, 0.f);
 	UPROPERTY(Transient, BlueprintReadOnly)
-	TScriptInterface<IPullable> PulledBody;
+	TScriptInterface<IPullable> ConnectedBody;
 	UPROPERTY(Transient, BlueprintReadOnly)
-	float CurrentRopeLength;
-	UPROPERTY(Transient, BlueprintReadOnly)
-	bool bCollided = false;
+	float CurrentRopeLength = 0.f;
 
 	//engine functions
-protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float _deltaTime) override;
-
+	
 	//functions
 	UFUNCTION(BlueprintCallable)
 	void Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody);
@@ -61,9 +63,8 @@ public:
 	void Revoke();
 	UFUNCTION(BlueprintCallable)
 	void HandleSurfaceCollision(bool _isHookable);
-	UFUNCTION()
-	FVector GetPull();
 
 private:
-	void ShrinkRope(float _deltaTime);
+	void ApplyRopeForce(float _deltaTime);
+	void ApplyHandForce(float _deltaTime);
 };

@@ -68,9 +68,14 @@ void ALevelPawn::RevokeHook()
 	LaunchedHook = nullptr;
 }
 
-void ALevelPawn::AddPull(FVector _pull)
+void ALevelPawn::AddInstantaneousForce(FVector _force)
 {
-	PhysicsBody->AddForce(_pull, NAME_None, true);
+	PhysicsBody->AddForce(_force, NAME_None, true);
+}
+
+void ALevelPawn::AddVelocity(FVector _vel)
+{
+	PhysicsBody->AddImpulse(_vel, NAME_None, true);
 }
 
 FVector ALevelPawn::GetLocation()
@@ -78,16 +83,14 @@ FVector ALevelPawn::GetLocation()
 	return GetActorLocation();
 }
 
-void ALevelPawn::ToggleGravity(bool _bValue)
+FVector ALevelPawn::GetBodyVelocity()
 {
-	PhysicsBody->SetEnableGravity(_bValue);
+	return GetVelocity();
 }
 
 void ALevelPawn::ResetVelocity()
 {
 	PhysicsBody->SetAllPhysicsLinearVelocity(FVector(0.f));
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 1.f, FColor::Red, 
-		PhysicsBody->GetPhysicsLinearVelocity().ToString());
 }
 
 bool ALevelPawn::GetIsPullingRope()
