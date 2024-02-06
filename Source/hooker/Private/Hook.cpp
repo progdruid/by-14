@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Hook.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "Math/UnrealMathUtility.h" 
 
 // Sets default values
 AHook::AHook()
@@ -48,8 +48,7 @@ void AHook::Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody)
 	
 	Direction = _direction;
 	Direction.Normalize();
-
-	float angle = -UKismetMathLibrary::DegAtan(Direction.Z / Direction.Y);
+	float angle = -FMath::RadiansToDegrees( FMath::Atan(Direction.Z / Direction.Y));;
 	angle += 180.f * (Direction.Y < 0);
 	
 	SetActorRotation(FRotator(0.f, 0.f, angle));
@@ -83,22 +82,18 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 
 void AHook::ApplyRopeForce(float _deltaTime)
 {
-	FVector force = GetActorLocation() - ConnectedBody->GetLocation();
-	float dist = force.Size();
-	force.Normalize();
-	force *= (dist - CurrentRopeLength) * Stiffness * (dist - CurrentRopeLength > 0);
-	ConnectedBody->AddVelocity(force * _deltaTime);
+	FVector impulse = GetActorLocation() - ConnectedBody->GetLocation();
+	const float deltaDist = impulse.Size() - CurrentRopeLength;
+	impulse.Normalize();
+	impulse *= deltaDist * Stiffness * _deltaTime * (deltaDist > 0);
+	ConnectedBody->AddVelocity(impulse);
 }
 
 void AHook::ApplyHandForce(float _deltaTime)
 {
 	FVector toHookVector = GetActorLocation() - ConnectedBody->GetLocation();
-	float dist = toHookVector.Size();
-	if (dist < CurrentRopeLength)
-		CurrentRopeLength = dist;
-	if (CurrentRopeLength < MinRopeLength)
-		CurrentRopeLength = MinRopeLength;
-
+	const float dist = toHookVector.Size();
+	CurrentRopeLength = FMath::Clamp(CurrentRopeLength, MinRopeLength, dist);
 	toHookVector.Normalize();
 
 	FVector vel = ConnectedBody->GetBodyVelocity();
