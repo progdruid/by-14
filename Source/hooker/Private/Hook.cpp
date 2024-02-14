@@ -1,9 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Hook.h"
-#include "Components/SphereComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "Math/UnrealMathUtility.h" 
 
 // Sets default values
 AHook::AHook()
@@ -23,21 +21,21 @@ void AHook::BeginPlay()
 void AHook::Tick(float _deltaTime)
 {
 	Super::Tick(_deltaTime);
-	if (!PulledBody)
+	if (!ConnectedBody)
 		Revoke();
 	else if (HookState == EHookState::Flying)
 	{
-		AddActorWorldOffset(Direction * HookFlyingSpeed * _deltaTime, true);
-
-		if (FVector::DistSquared(GetActorLocation(), PulledBody->GetLocation()) > MaxHookableRopeLength * MaxHookableRopeLength)
+		if (FVector::DistSquared(GetActorLocation(), ConnectedBody->GetLocation()) > MaxHookableRopeLength * MaxHookableRopeLength)
 			Revoke();
+
+		AddActorWorldOffset(Direction * HookFlyingSpeed * _deltaTime, true);
 	}
 	else if (HookState == EHookState::Clinged)
 	{
-		//decrease if greater than zero otherwise set to zero
-		if (PulledBody->GetIsPullingRope())
-			ShrinkRope(_deltaTime);
-		PulledBody->AddPull(GetPull());
+		if (ConnectedBody->GetIsPullingRope())
+			ApplyHandForce(_deltaTime);
+		
+		ApplyRopeForce(_deltaTime);
 	}
 }
 
@@ -46,12 +44,11 @@ void AHook::Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody)
 	if (!this)
 		return;
 
-	PulledBody = _pulledBody;
+	ConnectedBody = _pulledBody;
 	
 	Direction = _direction;
 	Direction.Normalize();
-
-	float angle = -UKismetMathLibrary::DegAtan(Direction.Z / Direction.Y);
+	float angle = -FMath::RadiansToDegrees( FMath::Atan(Direction.Z / Direction.Y));;
 	angle += 180.f * (Direction.Y < 0);
 	
 	SetActorRotation(FRotator(0.f, 0.f, angle));
@@ -59,45 +56,50 @@ void AHook::Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody)
 
 void AHook::Revoke()
 {
-	//if (HookState == EHookState::Clinged && PulledBody)
-	//	PulledBody->ToggleGravity(true);
 	HookState = EHookState::None;
 	Destroy();
 }
 
 void AHook::HandleSurfaceCollision(bool _isHookable)
 {
-	if (bCollided)
+	if (HookState != EHookState::Flying)
 		return;
-	bCollided = true;
-
-	if (!_isHookable)
+	else if (!_isHookable)
 		Revoke();
-	else if (HookState == EHookState::Flying && PulledBody)
+	else if (HookState == EHookState::Flying && ConnectedBody)
 	{
 		HookState = EHookState::Clinged;
-		//PulledBody->ToggleGravity(false);
-		PulledBody->ResetVelocity();
-		CurrentRopeLength = FVector::Distance(GetActorLocation(), PulledBody->GetLocation());
+		ConnectedBody->ResetVelocity();
+		FVector toHookVec = GetActorLocation() - ConnectedBody->GetLocation();
+		CurrentRopeLength = toHookVec.Size();
+		if (ConnectedBody->GetIsPullingRope())
+		{
+			toHookVec.Normalize();
+			ConnectedBody->AddVelocity(toHookVec * InitPullVelocity);
+		}
 	}
 }
 
-FVector AHook::GetPull()
+void AHook::ApplyRopeForce(float _deltaTime)
 {
-	FVector pullAcc(0.f, 0.f, 0.f);
-	if (PulledBody && HookState == EHookState::Clinged)
-	{
-		pullAcc = GetActorLocation() - PulledBody->GetLocation();
-		float dist = pullAcc.Size();
-		pullAcc.Normalize();
-		pullAcc *= (dist - CurrentRopeLength) * Stiffness * (dist - CurrentRopeLength > 0);
-	}
-	return pullAcc;
+	FVector impulse = GetActorLocation() - ConnectedBody->GetLocation();
+	const float deltaDist = impulse.Size() - CurrentRopeLength;
+	impulse.Normalize();
+	impulse *= deltaDist * Stiffness * _deltaTime * (deltaDist > 0);
+	ConnectedBody->AddVelocity(impulse);
 }
 
-void AHook::ShrinkRope(float _deltaTime)
+void AHook::ApplyHandForce(float _deltaTime)
 {
-	CurrentRopeLength -= RopeShrinkingSpeed * _deltaTime;
-	if (CurrentRopeLength < MinRopeLength)
-		CurrentRopeLength = MinRopeLength;
+	FVector toHookVector = GetActorLocation() - ConnectedBody->GetLocation();
+	const float dist = toHookVector.Size();
+	CurrentRopeLength = FMath::Clamp(CurrentRopeLength, MinRopeLength, dist);
+	toHookVector.Normalize();
+
+	FVector vel = ConnectedBody->GetBodyVelocity();
+	float speedToHook = vel.Size();
+	vel.Normalize();
+	speedToHook *= FVector::DotProduct(vel, toHookVector);
+	if (speedToHook < MaxPullSpeed)
+		ConnectedBody->AddVelocity(toHookVector * BodyPull * _deltaTime);
 }
