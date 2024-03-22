@@ -10,7 +10,6 @@ if (scaledEdgeOffset.y < MinUVOffset)
     scaledEdgeOffset.y = MinUVOffset;
 float scaledDepthThreshold = DepthThreshold * depthScaler;
 
-double curv = 0;
 float angleStep = PI / NumberEdgeChecks;
 for (int i = 0; i < NumberEdgeChecks; i++)
 {
