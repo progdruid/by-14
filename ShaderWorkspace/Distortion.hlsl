@@ -7,6 +7,7 @@ addAmount += cos(factor*2/Period)*Distortion;
 addAmount += cos(factor*4/Period)*Distortion;
 addAmount/=3;
 
-return UV + float2(addAmount, addAmount);
+float2 worldAdd = float2(addAmount, addAmount);
+return worldAdd - CameraDirection * dot(worldAdd,CameraDirection);
 
 #undef PI
