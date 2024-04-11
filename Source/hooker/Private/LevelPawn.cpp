@@ -34,16 +34,11 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 	if (!world || !_specifiedHook || IsValid(LaunchedHook))
 		return;
 
-	FTransform transform = GetActorTransform();
-
-	//spawn
-	FActorSpawnParameters spawnParams;
-	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	LaunchedHook = world->SpawnActor<AHook>(_specifiedHook, transform, spawnParams);
+	const FTransform transform = GetActorTransform();
 
 	//get mouse info
 	FVector mousePosition, mouseDirection;
-	bool found = world->GetFirstPlayerController()->DeprojectMousePositionToWorld(mousePosition, mouseDirection);
+	const bool found = world->GetFirstPlayerController()->DeprojectMousePositionToWorld(mousePosition, mouseDirection);
 	if (!found)
 		return;
 
@@ -51,7 +46,12 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 	float t = -mousePosition.X / mouseDirection.X; // lerp factor
 	FVector positionOnPlane = mousePosition + mouseDirection * t; // getting the point on the x = 0 plane
 	positionOnPlane.X = 0.f;
-	FVector hookDirection = positionOnPlane - transform.GetLocation();
+	const FVector hookDirection = positionOnPlane - transform.GetLocation();
+
+	//spawn
+	FActorSpawnParameters spawnParams;
+	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	LaunchedHook = world->SpawnActor<AHook>(_specifiedHook, transform, spawnParams);
 
 	//set direction
 	LaunchedHook->Setup(hookDirection, TScriptInterface<IPullable>(this));

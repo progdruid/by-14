@@ -49,7 +49,9 @@ protected:
 	TScriptInterface<IPullable> ConnectedBody;
 	UPROPERTY(Transient, BlueprintReadOnly)
 	float CurrentRopeLength = 0.f;
-
+	UPROPERTY(Transient, BlueprintReadOnly)
+	FVector spawnPosition;
+	
 	//engine functions
 	virtual void BeginPlay() override;
 

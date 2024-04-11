@@ -25,9 +25,11 @@ void AHook::Tick(float _deltaTime)
 		Revoke();
 	else if (HookState == EHookState::Flying)
 	{
-		if (FVector::DistSquared(GetActorLocation(), ConnectedBody->GetLocation()) > MaxHookableRopeLength * MaxHookableRopeLength)
+		const float distToSpawnSquared = FVector::DistSquared(spawnPosition, GetActorLocation());
+		const float distToBodySquared = FVector::DistSquared(ConnectedBody->GetLocation(), GetActorLocation());
+		if (FMath::Min(distToBodySquared, distToSpawnSquared) > MaxHookableRopeLength * MaxHookableRopeLength)
 			Revoke();
-
+		
 		AddActorWorldOffset(Direction * HookFlyingSpeed * _deltaTime, true);
 	}
 	else if (HookState == EHookState::Clinged)
@@ -50,6 +52,8 @@ void AHook::Setup(FVector _direction, TScriptInterface<IPullable> _pulledBody)
 	Direction.Normalize();
 	float angle = -FMath::RadiansToDegrees( FMath::Atan(Direction.Z / Direction.Y));;
 	angle += 180.f * (Direction.Y < 0);
+
+	spawnPosition = GetActorLocation();
 	
 	SetActorRotation(FRotator(0.f, 0.f, angle));
 }
