@@ -10,6 +10,12 @@ AHook::AHook()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+float AHook::GetMaxHookableDistance() const
+{
+	return MaxHookableRopeLength;
+}
+
+
 // Called when the game starts or when spawned
 void AHook::BeginPlay()
 {

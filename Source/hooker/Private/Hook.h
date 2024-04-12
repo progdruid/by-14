@@ -22,6 +22,9 @@ class AHook : public AActor
 	
 public:
 	AHook();
+	
+	//getters and setters
+	float GetMaxHookableDistance () const;
 
 	//fields and properties
 protected:
@@ -54,7 +57,6 @@ protected:
 	
 	//engine functions
 	virtual void BeginPlay() override;
-
 public:	
 	virtual void Tick(float _deltaTime) override;
 	
@@ -65,7 +67,7 @@ public:
 	void Revoke();
 	UFUNCTION(BlueprintCallable)
 	void HandleSurfaceCollision(bool _isHookable);
-
+	
 private:
 	void ApplyRopeForce(float _deltaTime);
 	void ApplyHandForce(float _deltaTime);
