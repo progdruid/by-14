@@ -2,13 +2,11 @@
 #define PI 3.1415926538
 
 float centerDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV, 1), 1, false).r;
-float depthScaler = rsqrt(DefaultDepth / centerDepth);
-float2 scaledEdgeOffset = EdgeUVOffset / depthScaler;
+float2 scaledEdgeOffset = EdgeUVOffset * (DefaultDepth / centerDepth);
 if (scaledEdgeOffset.x < MinUVOffset)
     scaledEdgeOffset.x = MinUVOffset;
 if (scaledEdgeOffset.y < MinUVOffset)
     scaledEdgeOffset.y = MinUVOffset;
-float scaledDepthThreshold = DepthThreshold * depthScaler;
 
 float angleStep = PI / NumberEdgeChecks;
 for (int i = 0; i < NumberEdgeChecks; i++)
@@ -17,18 +15,13 @@ for (int i = 0; i < NumberEdgeChecks; i++)
 
     float firstDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + offsetVec, 1), 1, false).r;
     float secondDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV - offsetVec, 1), 1, false).r;
-    bool depthDetected = abs(firstDepth + secondDepth - centerDepth * 2) > scaledDepthThreshold * 2;
+    bool depthDetected = abs(firstDepth + secondDepth - centerDepth * 2) > DepthThreshold * 2;
 
     float3 firstNormal = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + offsetVec, 8), 8, false);
     float3 secondNormal = SceneTextureLookup(ViewportUVToSceneTextureUV(UV - offsetVec, 8), 8, false);
     bool normalDetected = dot(firstNormal, secondNormal) < (1. - NormalThreshold);
     
-    float3 firstColor = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + offsetVec, 2), 2, false);
-    float3 secondColor = SceneTextureLookup(ViewportUVToSceneTextureUV(UV - offsetVec, 2), 2, false);
-    float3 diffColor = abs(firstColor - secondColor);
-    bool colorDetected = diffColor.r + diffColor.g + diffColor.b > ColorThreshold;
-    
-    if (depthDetected || normalDetected || colorDetected)
+    if (depthDetected || normalDetected)
         return 1;
     
 }
