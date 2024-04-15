@@ -23,33 +23,19 @@ void ALevelPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 
-void ALevelPawn::LaunchHook()
+void ALevelPawn::LaunchHook(FVector _direction)
 {
 	UWorld* world = GetWorld();
 	if (!world || !SpecifiedHook || IsValid(LaunchedHook))
 		return;
-
-	const FTransform transform = GetActorTransform();
-
-	//get mouse info
-	FVector mousePosition, mouseDirection;
-	const bool found = world->GetFirstPlayerController()->DeprojectMousePositionToWorld(mousePosition, mouseDirection);
-	if (!found)
-		return;
-
-	//calculate hook direction
-	const float t = -mousePosition.X / mouseDirection.X; // lerp factor
-	FVector positionOnPlane = mousePosition + mouseDirection * t; // getting the point on the x = 0 plane
-	positionOnPlane.X = 0.f;
-	const FVector hookDirection = positionOnPlane - transform.GetLocation();
-
+	
 	//spawn
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	LaunchedHook = world->SpawnActor<AHook>(SpecifiedHook, transform, spawnParams);
+	LaunchedHook = world->SpawnActor<AHook>(SpecifiedHook, GetActorTransform(), spawnParams);
 
 	//set direction
-	LaunchedHook->Setup(hookDirection, TScriptInterface<IPullable>(this));
+	LaunchedHook->Setup(_direction, TScriptInterface<IPullable>(this));
 }
 
 void ALevelPawn::RevokeHook()

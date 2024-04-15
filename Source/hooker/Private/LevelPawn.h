@@ -37,7 +37,7 @@ protected:
 	//interface functions
 public:	
 	UFUNCTION(BlueprintCallable)
-	void LaunchHook();
+	void LaunchHook(FVector _direction);
 	UFUNCTION(BlueprintCallable)
 	void RevokeHook();
 	UFUNCTION(BlueprintCallable)
