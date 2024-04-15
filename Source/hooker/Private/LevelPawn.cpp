@@ -14,7 +14,7 @@ void ALevelPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	PhysicsBody = Cast<UPrimitiveComponent>(RootComponent);
+	PhysicsBody = CastChecked<UPrimitiveComponent>(RootComponent);
 }
 
 void ALevelPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -22,16 +22,11 @@ void ALevelPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	RevokeHook();
 }
 
-void ALevelPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-}
-
-void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
+void ALevelPawn::LaunchHook()
 {
 	UWorld* world = GetWorld();
-	if (!world || !_specifiedHook || IsValid(LaunchedHook))
+	if (!world || !SpecifiedHook || IsValid(LaunchedHook))
 		return;
 
 	const FTransform transform = GetActorTransform();
@@ -43,7 +38,7 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 		return;
 
 	//calculate hook direction
-	float t = -mousePosition.X / mouseDirection.X; // lerp factor
+	const float t = -mousePosition.X / mouseDirection.X; // lerp factor
 	FVector positionOnPlane = mousePosition + mouseDirection * t; // getting the point on the x = 0 plane
 	positionOnPlane.X = 0.f;
 	const FVector hookDirection = positionOnPlane - transform.GetLocation();
@@ -51,7 +46,7 @@ void ALevelPawn::LaunchHook(TSubclassOf<AHook> _specifiedHook)
 	//spawn
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	LaunchedHook = world->SpawnActor<AHook>(_specifiedHook, transform, spawnParams);
+	LaunchedHook = world->SpawnActor<AHook>(SpecifiedHook, transform, spawnParams);
 
 	//set direction
 	LaunchedHook->Setup(hookDirection, TScriptInterface<IPullable>(this));
@@ -68,14 +63,21 @@ void ALevelPawn::RevokeHook()
 	LaunchedHook = nullptr;
 }
 
+void ALevelPawn::UpdateIsPulling(bool _isPulling)
+{
+	bIsPullingRope = _isPulling;
+}
+
 void ALevelPawn::AddInstantaneousForce(FVector _force)
 {
-	PhysicsBody->AddForce(_force, NAME_None, true);
+	if (PhysicsBody)
+		PhysicsBody->AddForce(_force, NAME_None, true);
 }
 
 void ALevelPawn::AddVelocity(FVector _vel)
 {
-	PhysicsBody->AddImpulse(_vel, NAME_None, true);
+	if (PhysicsBody)
+		PhysicsBody->AddImpulse(_vel, NAME_None, true);
 }
 
 FVector ALevelPawn::GetLocation()
@@ -90,7 +92,8 @@ FVector ALevelPawn::GetBodyVelocity()
 
 void ALevelPawn::ResetVelocity()
 {
-	PhysicsBody->SetAllPhysicsLinearVelocity(FVector(0.f));
+	if (PhysicsBody)
+		PhysicsBody->SetAllPhysicsLinearVelocity(FVector(0.f));
 }
 
 bool ALevelPawn::GetIsPullingRope()

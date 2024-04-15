@@ -17,40 +17,36 @@ class ALevelPawn : public APawn, public IPullable
 public:
 	ALevelPawn();
 	
-protected:
 	//field and properties
-	UPROPERTY(Transient, BlueprintReadWrite)
-	bool bIsPullingRope;
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Main")
+	TSubclassOf<AHook> SpecifiedHook;
+
+
 private:
-	UPROPERTY()
 	AHook* LaunchedHook;
-	UPROPERTY()
 	UPrimitiveComponent* PhysicsBody;
+
+	bool bIsPullingRope;
 
 	//engine functions
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	//interface functions
 public:	
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	//functions
 	UFUNCTION(BlueprintCallable)
-	void LaunchHook(TSubclassOf<AHook> _specifiedHook);
+	void LaunchHook();
 	UFUNCTION(BlueprintCallable)
 	void RevokeHook();
-
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
+	void UpdateIsPulling (bool _isPulling);
+	
 	virtual void AddInstantaneousForce(FVector _force) override;
-	UFUNCTION()
 	virtual void AddVelocity(FVector _vel) override;
-	UFUNCTION()
 	virtual FVector GetLocation() override;
-	UFUNCTION()
 	virtual FVector GetBodyVelocity() override;
-	UFUNCTION()
 	virtual void ResetVelocity() override;
-	UFUNCTION()
 	virtual bool GetIsPullingRope() override;
 };
