@@ -22,7 +22,11 @@ private:
 	ALevelPawn* LevelPawn;
 	//ALevelHUD* levelHUD;
 
+	FVector Direction;
+	FVector TargetPoint;
+	
 public:
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
 	
