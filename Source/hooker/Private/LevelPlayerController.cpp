@@ -3,9 +3,20 @@
 
 #include "LevelPlayerController.h"
 
+#include "LevelHUD.h"
+
 ALevelPlayerController::ALevelPlayerController()
 {
 	
+}
+
+void ALevelPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AHUD* hud = GetHUD();
+	ALevelHUD* levelHUD = CastChecked<ALevelHUD>(GetHUD());
+	MarkReceiver = levelHUD->GetMarkReceiver();
 }
 
 void ALevelPlayerController::Tick(float DeltaSeconds)
@@ -29,6 +40,9 @@ void ALevelPlayerController::Tick(float DeltaSeconds)
 	positionOnPlane.X = 0.f;
 	Direction = positionOnPlane - pawnPosition;
 
+	if (!MarkReceiver)
+		return;
+		
 	//raycast
 	FHitResult result;
 	FCollisionQueryParams query;
@@ -39,8 +53,13 @@ void ALevelPlayerController::Tick(float DeltaSeconds)
 		pawnPosition + Direction * 10000.f,
 		ECC_Visibility,
 		query);
-	
-	TargetPoint = result.Location;
+
+	//world -> screen
+	FVector2D screenLocation;
+	ProjectWorldLocationToScreen(result.Location, screenLocation, true);
+
+	//transfer
+	MarkReceiver->SetTargetMarkPosition(screenLocation);
 }
 
 void ALevelPlayerController::OnPossess(APawn* InPawn)

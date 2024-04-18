@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DistanceCircleWidget.h"
+#include "TargetMarkWidget.h"
 #include "GameFramework/HUD.h"
 #include "LevelHUD.generated.h"
 
@@ -17,12 +17,19 @@ class ALevelHUD : public AHUD
 public:
 	ALevelHUD();
 	
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widgets")
+	TSubclassOf<UTargetMarkWidget> TargetMarkWidgetClass;
+
+private:
+	UTargetMarkWidget* TargetMarkWidget;
+	
+public:	
 	virtual void BeginPlay() override;
 	virtual void DrawHUD() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widgets")
-	TSubclassOf<UDistanceCircleWidget> DistanceCircleWidgetClass;
+	TScriptInterface<ITargetMarkReceiver> GetMarkReceiver();
 
 private:
-	UDistanceCircleWidget* DistanceCircleWidget;
+	void CreateWidgets();
 };

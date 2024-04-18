@@ -4,26 +4,28 @@
 
 #include "CoreMinimal.h"
 #include "Hook.h"
+#include "TargetMarkReceiver.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
-#include "DistanceCircleWidget.generated.h"
+#include "TargetMarkWidget.generated.h"
 
 /**
- * A widget to display the max distance
- * at which the player is able to throw the hook
+ * A widget to display the target mark
+ * that the player aims to
  */
 UCLASS()
-class UDistanceCircleWidget : public UUserWidget
+class UTargetMarkWidget : public UUserWidget, public ITargetMarkReceiver
 {
 	GENERATED_BODY()
 public:
-	UDistanceCircleWidget(const FObjectInitializer&);
-
-	virtual void NativeConstruct() override;
+	UTargetMarkWidget(const FObjectInitializer&);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
-	UImage* DistanceCircleImage;
+	UImage* TargetMarkImage;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<AHook> HookClass;
 
+	virtual void SetTargetMarkPosition(FVector2D pos) override;
+protected:
+	virtual void NativeConstruct() override;
 };

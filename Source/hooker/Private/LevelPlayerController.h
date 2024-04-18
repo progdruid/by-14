@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "LevelHUD.h"
+#include "TargetMarkReceiver.h"
 #include "LevelPawn.h"
 #include "GameFramework/PlayerController.h"
 #include "LevelPlayerController.generated.h"
@@ -20,12 +20,12 @@ public:
 
 private:
 	ALevelPawn* LevelPawn;
-	//ALevelHUD* levelHUD;
+	TScriptInterface<ITargetMarkReceiver> MarkReceiver;
 
 	FVector Direction;
-	FVector TargetPoint;
 	
 public:
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
