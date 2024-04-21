@@ -3,7 +3,8 @@
 
 #include "LevelPlayerController.h"
 
-#include "LevelHUD.h"
+#include "BaseSurface.h"
+
 
 ALevelPlayerController::ALevelPlayerController()
 {
@@ -13,19 +14,17 @@ ALevelPlayerController::ALevelPlayerController()
 void ALevelPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AHUD* hud = GetHUD();
-	ALevelHUD* levelHUD = CastChecked<ALevelHUD>(GetHUD());
-	MarkReceiver = levelHUD->GetMarkReceiver();
 }
 
 void ALevelPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	
+	CurrentMouseCursor = EMouseCursor::Default;
 
+	//get pawn info
 	if (!LevelPawn)
 		return;
-	
 	const FVector pawnPosition = LevelPawn->GetActorTransform().GetLocation();
 	
 	//get mouse info
@@ -33,40 +32,42 @@ void ALevelPlayerController::Tick(float DeltaSeconds)
 	const bool foundMouse = DeprojectMousePositionToWorld(mousePosition, mouseDirection);
 	if (!foundMouse)
 		return;
-
+	
 	//calculate hook direction
 	const float t = -mousePosition.X / mouseDirection.X; // factor
 	FVector positionOnPlane = mousePosition + mouseDirection * t; // getting the point on the x = 0 plane
 	positionOnPlane.X = 0.f;
 	Direction = positionOnPlane - pawnPosition;
 
-	if (!MarkReceiver)
+
+	if (!UsedHook)
 		return;
-		
+	
 	//raycast
 	FHitResult result;
-	FCollisionQueryParams query;
-	query.AddIgnoredActor(LevelPawn);
-	bool foundHit = GetWorld()->LineTraceSingleByChannel(
+	FCollisionQueryParams collisionQuery;
+	collisionQuery.AddIgnoredActor(LevelPawn);
+	const bool foundHit = GetWorld()->LineTraceSingleByChannel(
 		result,
 		pawnPosition,
-		pawnPosition + Direction * 10000.f,
+		pawnPosition + Direction * UsedHook.GetDefaultObject()->GetMaxHookableDistance() * 1.2f,
 		ECC_Visibility,
-		query);
+		collisionQuery);
 
-	//world -> screen
-	FVector2D screenLocation;
-	ProjectWorldLocationToScreen(result.Location, screenLocation, true);
-
-	//transfer
-	MarkReceiver->SetTargetMarkPosition(screenLocation);
+	//interactiveness evaluation
+	const ABaseSurface* surface = Cast<ABaseSurface>(result.GetActor());
+	const bool hitInteractive = foundHit && surface
+		&& result.Distance < UsedHook.GetDefaultObject()->GetMaxHookableDistance()
+		&& InteractivityTagQuery.Matches(surface->GetGameplayTagContainer());
+	if (hitInteractive)
+		CurrentMouseCursor = EMouseCursor::Hand;
 }
 
 void ALevelPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	LevelPawn = CastChecked<ALevelPawn>(InPawn);
+	LevelPawn = Cast<ALevelPawn>(InPawn);
 }
 
 void ALevelPlayerController::OnUnPossess()

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TargetMarkReceiver.h"
+#include "GameplayTagContainer.h"
 #include "LevelPawn.h"
 #include "GameFramework/PlayerController.h"
 #include "LevelPlayerController.generated.h"
@@ -18,9 +18,14 @@ class ALevelPlayerController : public APlayerController
 public:
 	ALevelPlayerController();
 
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Main")
+	TSubclassOf<AHook> UsedHook;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Main")
+	FGameplayTagQuery InteractivityTagQuery;
+	
 private:
 	ALevelPawn* LevelPawn;
-	TScriptInterface<ITargetMarkReceiver> MarkReceiver;
 
 	FVector Direction;
 	

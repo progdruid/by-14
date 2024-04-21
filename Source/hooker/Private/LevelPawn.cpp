@@ -19,7 +19,7 @@ void ALevelPawn::BeginPlay()
 
 void ALevelPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	RevokeHook();
+	//RevokeHook();
 }
 
 
