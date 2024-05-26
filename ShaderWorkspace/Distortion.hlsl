@@ -7,5 +7,5 @@ addAmount += cos(factor*2/Period);
 addAmount += cos(factor*4/Period);
 addAmount *= Distortion / 3;
 
-float3 worldOffset = { addAmount, addAmount, 0 };
+float3 worldOffset = {0, addAmount, addAmount};
 return worldOffset;
