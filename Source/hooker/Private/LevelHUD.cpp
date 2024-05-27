@@ -3,6 +3,9 @@
 
 #include "LevelHUD.h"
 
+#include "Animation/AnimSequenceHelpers.h"
+#include "Animation/WidgetAnimation.h"
+
 ALevelHUD::ALevelHUD()
 {
 	
