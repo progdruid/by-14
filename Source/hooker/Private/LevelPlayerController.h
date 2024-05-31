@@ -27,6 +27,7 @@ public:
 private:
 	ALevelPawn* LevelPawn;
 
+	bool bCanControl;
 	FVector Direction;
 	
 public:
@@ -41,4 +42,6 @@ public:
 	void CallRevoke();
 	UFUNCTION(BlueprintCallable)
 	void UpdatePullAxis (bool _isPulling);
+	UFUNCTION(BlueprintCallable)
+	void SetControllability(bool _value);
 };

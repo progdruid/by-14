@@ -23,7 +23,7 @@ void ALevelPlayerController::Tick(float DeltaSeconds)
 	CurrentMouseCursor = EMouseCursor::Default;
 
 	//get pawn info
-	if (!LevelPawn)
+	if (!LevelPawn || !bCanControl)
 		return;
 	const FVector pawnPosition = LevelPawn->GetActorTransform().GetLocation();
 	
@@ -79,7 +79,7 @@ void ALevelPlayerController::OnUnPossess()
 
 void ALevelPlayerController::CallLaunch()
 {
-	if (!LevelPawn)
+	if (!LevelPawn || !bCanControl)
 		return;
 	
 	LevelPawn->LaunchHook(Direction);
@@ -87,7 +87,7 @@ void ALevelPlayerController::CallLaunch()
 
 void ALevelPlayerController::CallRevoke()
 {
-	if (!LevelPawn)
+	if (!LevelPawn || !bCanControl)
 		return;
 
 	LevelPawn->RevokeHook();
@@ -95,9 +95,14 @@ void ALevelPlayerController::CallRevoke()
 
 void ALevelPlayerController::UpdatePullAxis(bool _isPulling)
 {
-	if (!LevelPawn)
+	if (!LevelPawn || !bCanControl)
 		return;
 
 	LevelPawn->UpdateIsPulling(_isPulling);
+}
+
+void ALevelPlayerController::SetControllability(bool _value)
+{
+	bCanControl = _value;
 }
 
