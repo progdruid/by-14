@@ -7,7 +7,7 @@
 #include "Pullable.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, NotBlueprintable)
 class UPullable : public UInterface
 {
 	GENERATED_BODY()
@@ -24,8 +24,11 @@ class HOOKER_API IPullable
 public:
 	virtual void AddInstantaneousForce(FVector _force);
 	virtual void AddVelocity(FVector _vel);
+	UFUNCTION(BlueprintCallable)
 	virtual FVector GetLocation();
+	UFUNCTION(BlueprintCallable)
 	virtual FVector GetBodyVelocity();
 	virtual void ResetVelocity();
+	UFUNCTION(BlueprintCallable)
 	virtual bool GetIsPullingRope();
 };

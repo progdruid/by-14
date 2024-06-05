@@ -22,12 +22,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Main")
 	TSubclassOf<AHook> SpecifiedHook;
 
+protected:
+	UPROPERTY(Transient, BlueprintReadOnly)
+	AHook* LaunchedHook;
+	UPROPERTY(Transient, BlueprintReadOnly)
+	bool bIsPullingRope;
 
 private:
-	AHook* LaunchedHook;
 	UPrimitiveComponent* PhysicsBody;
-
-	bool bIsPullingRope;
 
 	//engine functions
 protected:

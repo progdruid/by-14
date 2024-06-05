@@ -3,6 +3,8 @@
 
 #include "LevelPawn.h"
 
+#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values
 ALevelPawn::ALevelPawn()
 {
@@ -86,3 +88,4 @@ bool ALevelPawn::GetIsPullingRope()
 {
 	return bIsPullingRope;
 }
+
