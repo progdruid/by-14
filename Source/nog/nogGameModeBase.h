@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "hookerGameModeBase.generated.h"
+#include "nogGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class HOOKER_API AhookerGameModeBase : public AGameModeBase
+class NOG_API AnogGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	

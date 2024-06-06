@@ -16,7 +16,7 @@ class UPullable : public UInterface
 /**
  * 
  */
-class HOOKER_API IPullable
+class NOG_API IPullable
 {
 	GENERATED_BODY()
 

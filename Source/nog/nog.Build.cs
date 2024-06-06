@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class hooker : ModuleRules
+public class nog : ModuleRules
 {
-	public hooker(ReadOnlyTargetRules Target) : base(Target)
+	public nog(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	

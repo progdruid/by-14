@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class hookerTarget : TargetRules
+public class nogEditorTarget : TargetRules
 {
-	public hookerTarget( TargetInfo Target) : base(Target)
+	public nogEditorTarget( TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Game;
+		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
-		ExtraModuleNames.Add("hooker");
+		ExtraModuleNames.Add("nog");
 	}
 }
