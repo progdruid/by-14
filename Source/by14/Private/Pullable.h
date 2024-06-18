@@ -16,7 +16,7 @@ class UPullable : public UInterface
 /**
  * 
  */
-class NOG_API IPullable
+class BY14_API IPullable
 {
 	GENERATED_BODY()
 

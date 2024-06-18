@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class nogTarget : TargetRules
+public class by14EditorTarget : TargetRules
 {
-	public nogTarget( TargetInfo Target) : base(Target)
+	public by14EditorTarget( TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Game;
+		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1;
-		ExtraModuleNames.Add("nog");
+		ExtraModuleNames.Add("by14");
 	}
 }
