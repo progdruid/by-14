@@ -21,7 +21,10 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Main")
 	TSubclassOf<AHook> SpecifiedHook;
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Main")
+	USoundWave* HookLaunchSound;
+	
+	
 protected:
 	UPROPERTY(Transient, BlueprintReadOnly)
 	AHook* LaunchedHook;

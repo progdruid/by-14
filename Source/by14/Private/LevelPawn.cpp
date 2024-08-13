@@ -3,6 +3,8 @@
 
 #include "LevelPawn.h"
 
+#include "AssetTypeActions/AssetDefinition_SoundBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -38,6 +40,13 @@ void ALevelPawn::LaunchHook(FVector _direction)
 
 	//set direction
 	LaunchedHook->Setup(_direction, TScriptInterface<IPullable>(this));
+
+	if (HookLaunchSound)
+	{
+		constexpr float RangeSize = 0.2f;
+		const float PitchMultiplier = FMath::RandRange(1.f - RangeSize, 1.f + RangeSize);
+		UGameplayStatics::PlaySound2D(this, HookLaunchSound, 1.f, PitchMultiplier);
+	}
 }
 
 void ALevelPawn::RevokeHook()

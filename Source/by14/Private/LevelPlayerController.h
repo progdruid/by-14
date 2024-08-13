@@ -25,6 +25,7 @@ public:
 	FGameplayTagQuery InteractivityTagQuery;
 	
 private:
+	UPROPERTY(Transient)
 	ALevelPawn* LevelPawn;
 
 	bool bCanControl;

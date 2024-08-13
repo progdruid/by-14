@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Hook.h"
+
+#include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h" 
 
 // Sets default values
@@ -79,6 +81,10 @@ void AHook::HandleSurfaceCollision(bool _isHookable)
 	else if (HookState == EHookState::Flying && ConnectedBody)
 	{
 		HookState = EHookState::Clinged;
+
+		if (ClingSound)
+			UGameplayStatics::PlaySoundAtLocation(this, ClingSound, GetActorLocation());
+		
 		ConnectedBody->ResetVelocity();
 		FVector toHookVec = GetActorLocation() - ConnectedBody->GetLocation();
 		CurrentRopeLength = toHookVec.Size();

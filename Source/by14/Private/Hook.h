@@ -43,6 +43,9 @@ protected:
 	float BodyPull = 0.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
 	float MaxPullSpeed = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Default")
+	USoundWave* ClingSound;
 	
 	UPROPERTY(Transient, BlueprintReadOnly)
 	EHookState HookState = EHookState::Flying;
